@@ -1,3 +1,4 @@
+const Joi = require('joi');
 
 const courses = require('../model/courses');
 
@@ -12,7 +13,7 @@ exports.view_all_courses =  (req, res) => {
 
 // Get a course
 exports.get_one_course = (req, res) => {
-    const course = courses.find(c => c.id === parseInt(req.params.id));
+    const course = courses.find(required_course => required_course.id === parseInt(req.params.id));
     if (!course) return res.status(404).send('The course with the given ID was not found.');
     return res.send(course);
 };
@@ -34,7 +35,7 @@ exports.create_course = (req, res) => {
 exports.update_course = (req, res) => {
     // Look up the course
     // If course doesn't exist, return 404
-    const course = courses.find(c => c.id === parseInt(req.params.id));
+    const course = courses.find(required_course => required_course.id === parseInt(req.params.id));
     if (!course) return res.status(404).send('The course with the given ID was not found.');
 
     // Validate course
@@ -49,11 +50,15 @@ exports.update_course = (req, res) => {
     return res.send(course);
 };
 
-// Define a schema
-function validateCourse(course) {
-    const schema = {
-        name: Joi.string().min(3).required()
-    };
+// Define a schema(Input Validation)
+validateCourse = (course) => {
+    const schema = Joi.object().keys({
+        course_name: Joi.string().min(3).max(30).required(),
+        course_title: Joi.string().min(3).max(20).required(),
+        course_code: Joi.number().integer().positive().min(100).max(400).required(),
+        lecturer: Joi.string().required(),
+        gender:  Joi.any().valid("Male", "Female").error(() => 'Gender should be Male (or) Female')
+    });
 
     return Joi.validate(course, schema);
 }
@@ -62,7 +67,7 @@ function validateCourse(course) {
 exports.delete_course = (req, res) => {
     // Look up the course
     // If not existent, return 404 - Bad request
-    const course = courses.find(c => c.id === parseInt(req.params.id));
+    const course = courses.find(required_course => required_course.id === parseInt(req.params.id));
     if (!course) return res.status(404).send('The course with the given ID was not found.');
 
     // Delete the course
