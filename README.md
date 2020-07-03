@@ -57,6 +57,6 @@ DELETE Request -> localhost:3000/api/v1/courses/:id
 
 Chinedu Ezeifeka
 
-#License
+# License
 
 ISC
