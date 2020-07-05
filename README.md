@@ -34,7 +34,7 @@ $ cd CoursesAPI
 # Install dependencies
 $ npm install
 
-# Create .env file for environmental variables in your root directory like the .env.example file
+# Create .env file for environmental variables in your root directory.
 
 
 # Run the app
